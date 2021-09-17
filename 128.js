@@ -1,15 +1,18 @@
+let score = [];
+let highScore = 0;
 const grid = {
   gridElement: document.getElementsByClassName('grid')[0],
   cells: [],
   playable: false,
   directionRoots: {
-    // roots are the first row's or column's indexes of swipe direction
+    // roots are the first row's, col's index from swipe
     UP: [1, 2, 3, 4],
     RIGHT: [4, 8, 12, 16],
     DOWN: [13, 14, 15, 16],
     LEFT: [1, 5, 9, 13],
   },
-  init: function () {
+  init: () => {
+    console.log(highScore);
     const cellElements = document.getElementsByClassName('cell');
     let cellIndex = 1;
 
@@ -24,11 +27,11 @@ const grid = {
       cellIndex++;
     }
 
-    // spawn first number and start game
+    // spawning mechanism
     number.spawn();
     this.playable = true;
   },
-  randomEmptyCellIndex: function () {
+  randomEmptyCellIndex: () => {
     let emptyCells = [];
 
     for (let i = 1; i < this.cells.length; i++) {
@@ -38,13 +41,12 @@ const grid = {
     }
 
     if (emptyCells.length === 0) {
-      // no empty cell, game over
       return false;
     }
 
     return emptyCells[Math.floor(Math.random() * emptyCells.length)];
   },
-  slide: function (direction) {
+  slide: (direction) => {
     if (!this.playable) {
       return false;
     }
@@ -104,7 +106,7 @@ const grid = {
     }
 
     // spawn a new number and make game playable
-    setTimeout(function () {
+    setTimeout(() => {
       if (number.spawn()) {
         grid.playable = true;
       } else {
@@ -116,7 +118,7 @@ const grid = {
 
 const number = {
   numbers: [],
-  getElements: function () {
+  getElements: () => {
     const numberElements = document.getElementsByClassName('number');
 
     for (let numberElement of numberElements) {
@@ -125,7 +127,6 @@ const number = {
   },
   spawn: function () {
     const emptyCellIndex = grid.randomEmptyCellIndex();
-
     if (emptyCellIndex === false) {
       return false;
     }
@@ -146,7 +147,7 @@ const number = {
 
     return true;
   },
-  moveTo: function (fromCell, toCell) {
+  moveTo: (fromCell, toCell) => {
     const number = fromCell.number;
 
     if (toCell.number === null) {
@@ -171,14 +172,15 @@ const number = {
 
       // double target cell's number
       const newNumberValue = toCell.number.dataset.value * 2;
-
+      score.push(newNumberValue);
+      highScore = Math.max(score);
       toCell.number.dataset.value = newNumberValue;
       toCell.number.innerText = newNumberValue;
 
       // check for win condition
       if (newNumberValue == 128) {
         alert('You won. Congratulation');
-        playable = false;
+        grid.playable = false;
       }
       fromCell.number = null;
     }
