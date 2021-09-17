@@ -43,3 +43,13 @@ body, html {
     color: #FFFFFF;
     transition: all .3s;
 }
+
+.bttn-wrapper {
+    padding-top: 5vmin;
+    text-align: center;
+}
+
+.button {
+    position: absolute;
+    top: 50%;
+}
